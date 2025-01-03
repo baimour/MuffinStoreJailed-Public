@@ -25,12 +25,12 @@ struct FooterView: View {
             VStack {
                 Image(systemName: "exclamationmark.triangle")
                     .foregroundStyle(.red)
-                Text("Use at your own risk!")
+                Text("使用风险自负！")
                     .foregroundStyle(.yellow)
                 Image(systemName: "exclamationmark.triangle")
                     .foregroundStyle(.red)
             }
-            Text("I am not responsible for any damage, data loss, or any other issues caused by using this tool.")
+            Text("我对使用此工具造成的任何损坏、数据丢失或任何其他问题不承担责任")
                 .font(.caption)
         }
     }
@@ -54,10 +54,10 @@ struct ContentView: View {
             Spacer()
             if !isAuthenticated {
                 VStack {
-                    Text("Log in to the App Store")
+                    Text("登录App Store")
                         .font(.headline)
                         .fontWeight(.bold)
-                    Text("Your credentials will be sent directly to Apple.")
+                    Text("您的凭据将直接发送给Apple")
                         .font(.caption)
                 }
                 TextField("Apple ID", text: $appleId)
@@ -68,7 +68,7 @@ struct ContentView: View {
                 SecureField("Password", text: $password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-                TextField("2FA Code", text: $code)
+                TextField("双重验证", text: $code)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
                 Button("Authenticate") {
@@ -91,36 +91,36 @@ struct ContentView: View {
                 HStack {
                     Image(systemName: "info.circle.fill")
                         .foregroundColor(.yellow)
-                    Text("You WILL need to give a 2FA code to successfully log in.")
+                    Text("您需要提供双重验证代码才能成功登录")
                 }
             } else {
                 if isDowngrading {
                     VStack {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
-                        Text("Please wait...")
+                        Text("请稍等...")
                             .font(.headline)
                             .fontWeight(.bold)
-                        Text("The app is being downgraded. This may take a while.")
+                        Text("该应用正在降级，这可能需要一段时间")
                             .font(.caption)
                         
-                        Button("Done (exit app)") {
+                        Button("完成 (退出应用)") {
                             exit(0) // scuffed
                         }
                         .padding()
                     }
                 } else {
                     VStack {
-                        Text("Downgrade an app")
+                        Text("降级应用程序")
                             .font(.headline)
                             .fontWeight(.bold)
-                        Text("Enter the App Store link of the app you want to downgrade.")
+                        Text("输入要降级的应用App Store链接")
                             .font(.caption)
                     }
-                    TextField("App share Link", text: $appLink)
+                    TextField("应用分享链接", text: $appLink)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding()
-                    Button("Downgrade") {
+                    Button("降级") {
                         if appLink.isEmpty {
                             return
                         }
@@ -132,13 +132,13 @@ struct ContentView: View {
                                 break
                             }
                         }
-                        print("App ID: \(appLinkParsed)")
+                        print("应用ID: \(appLinkParsed)")
                         isDowngrading = true
                         downgradeApp(appId: appLinkParsed, ipaTool: ipaTool!)
                     }
                     .padding()
 
-                    Button("Log out and exit") {
+                    Button("注销并退出") {
                         isAuthenticated = false
                         EncryptedKeychainWrapper.nuke()
                         EncryptedKeychainWrapper.generateAndStoreKey()
@@ -154,10 +154,10 @@ struct ContentView: View {
         .padding()
         .onAppear {
             isAuthenticated = EncryptedKeychainWrapper.hasAuthInfo()
-            print("Found \(isAuthenticated ? "auth" : "no auth") info in keychain")
+            print("在钥匙串中找到\(isAuthenticated ? "授权" : "未授权")信息")
             if isAuthenticated {
                 guard let authInfo = EncryptedKeychainWrapper.getAuthInfo() else {
-                    print("Failed to get auth info from keychain, logging out")
+                    print("从钥匙串获取验证信息失败，正在退出登录")
                     isAuthenticated = false
                     EncryptedKeychainWrapper.nuke()
                     EncryptedKeychainWrapper.generateAndStoreKey()
@@ -167,9 +167,9 @@ struct ContentView: View {
                 password = authInfo["password"]! as! String
                 ipaTool = IPATool(appleId: appleId, password: password)
                 let ret = ipaTool?.authenticate()
-                print("Re-authenticated \(ret! ? "successfully" : "unsuccessfully")")
+                print("已重新验证\(ret! ? "成功" : "失败")")
             } else {
-                print("No auth info found in keychain, setting up by generating a key in SEP")
+                print("在钥匙链中找不到身份验证信息，正在通过在SEP中生成密钥进行设置")
                 EncryptedKeychainWrapper.generateAndStoreKey()
             }
         }
