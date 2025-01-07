@@ -13,7 +13,7 @@ struct HeaderView: View {
             Text("MuffinStore Jailed")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-            Text("by @mineekdev")
+            Text("by @mineekdev\n中文汉化🇨🇳: White")
                 .font(.caption)
         }
     }
@@ -65,13 +65,13 @@ struct ContentView: View {
                 .padding()
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                SecureField("Password", text: $password)
+                SecureField("密码", text: $password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
                 TextField("双重验证", text: $code)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-                Button("Authenticate") {
+                Button("登录") {
                     if appleId.isEmpty || password.isEmpty {
                         return
                     }
